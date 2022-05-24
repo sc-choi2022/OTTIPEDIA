@@ -69,7 +69,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
 
         # 인증된 사용자만 모든일이 가능 / 비인증 사용자는 모두 401 Unauthorized
-        'rest_framework.permissions.IsAuthenticated'
+        'rest_framework.permissions.AllowAny',
     ]
 }
 
@@ -140,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -161,5 +161,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
 
-# 모두에게 교차출처 허용 (*)
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    # Vue LocalHost
+    'http://localhost:8080',
+    'http://localhost:8081',
+]
