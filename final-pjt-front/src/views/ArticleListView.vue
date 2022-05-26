@@ -62,4 +62,8 @@
   hr {
     border: 0;
   }
+  button {
+    border: 0;
+    outline: 0;
+  }
 </style>

@@ -6,7 +6,7 @@
       <span v-if="payload.rank === 6"><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /></span>
       <span v-if="payload.rank === 8"><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /></span>
       <span v-if="payload.rank === 10"><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /><font-awesome-icon icon="fa-solid fa-star" /></span>
-      {{ payload.updated_at }}</span>
+      {{ payload.updated_at.substr(0,10) }}</span>
     <br>  
     <span v-if="!isEditing"></span>
 

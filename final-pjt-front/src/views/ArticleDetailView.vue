@@ -2,18 +2,13 @@
   <div>
     <div class="container">
       <h1>{{ article.title }}</h1>
+      <h2> Movie Title: {{ article.movie_title }} </h2>
+      <p class="righttext">기사 작성일: {{ article.created_at.substr(0,10) }} 기사 수정일: {{ article.updated_at.substr(0,10) }}</p>
 
-      <p>
-        content: {{ article.content }}
-      </p>
-      <p>
-        movie_title: {{ article.movie_title }}
-      </p>
-      <p>기사 작성일: {{ article.created_at }}</p>
-      <p>기사 수정일: {{ article.updated_at }}</p>
+      <p> {{ article.content }} </p>
       
       <!-- Article Edit/Delete UI -->
-      <div v-if="isAuthor">
+      <div class="righttext" v-if="isAuthor">
         <router-link :to="{ name: 'articleEdit', params: { articleId } }">
           <button>Edit</button>
         </router-link>
@@ -23,13 +18,12 @@
 
       <!-- Article Like UI -->
       <div>
-        Likeit:
-        <button
-          @click="likeArticle(articleId)"
-        >{{ likeCount }}</button>
+        Like it<font-awesome-icon icon="fa-solid fa-heart" color="#ff78ae" />:
+        <button @click="likeArticle(articleId)">
+          {{ likeCount }}
+        </button>
       </div>
 
-      <hr />
       <!-- Comment UI -->
       <comment-list :comments="article.comments"></comment-list>
     </div>
@@ -70,5 +64,26 @@
 </script>
 
 <style>
-
+  .container {
+    padding: 5rem 15rem;
+    background: rgba(128, 128, 128, 0.082);
+  }
+  .article {
+    text-align: left;
+  }
+  .board {
+    background: white;
+        padding: 10px;
+  }
+  a {
+    text-decoration:none;
+    color: black;
+    font-weight: 800;
+  }
+  hr {
+    border: 0;
+  }
+  .righttext {
+    text-align: right;
+  }
 </style>

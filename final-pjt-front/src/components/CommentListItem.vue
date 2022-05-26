@@ -4,10 +4,8 @@
       {{ comment.user.username }}
     </router-link>: 
     
-    <span v-if="!isEditing">{{ payload.content }}</span>
-    <br>
-    <span v-if="!isEditing">댓글 작성일: {{ payload.created_at }}</span> |  
-    <span v-if="!isEditing">댓글 수정일: {{ payload.updated_at }}</span>
+    <span v-if="!isEditing"> {{ payload.content }}</span> 
+    <span v-if="!isEditing"> {{ payload.updated_at.substr(0,10) }}</span>
 
     <span v-if="isEditing">
       <input type="text" v-model="payload.content">
@@ -58,5 +56,8 @@ export default {
 </script>
 
 <style>
-
+  button {
+    border: 0;
+    outline: 0;
+  }
 </style>
