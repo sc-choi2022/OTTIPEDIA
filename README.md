@@ -29,24 +29,25 @@
 
 **분업**
 
-- 최수연  
-  - 일정 및 계획 정리
-  - 로고 디자인
-  - 레이아웃 작성
-  - front-end (vue, css)
-  - back-end (django)
-    - API를 활용한 데이터 수집
-    - models.py 기획 및 작성
+최수연 
+
+- Back-end(Django)
+  - models.py 기획 및 작성
+  - API를 활용한 데이터 수집
+- Front-end(Vue.js)
+  - 로고 디자인 및 레이아웃 작성
+  - 프론트 담당(vue, css)
+- 프로젝트
+  - 일정 및 계획 정리(Trello)
 
 
 
-
-- 이다인
-  - front-end (vue)
-  - back-end (django)
-    - erd 작성
-    - serializer.py  작성
-  
+이다인
+- front-end (vue)
+  - 장고와 Vue를 연결하기 위한 구조 구축
+- back-end (django)
+  - ERD 작성
+  - serializer.py  작성
 
 
 
@@ -130,6 +131,10 @@
 
 **배포**
 
+### 데이터 수집 방법
+
+The Movie Database(TMDB)를 활용한 데이터 수집
+
 
 
 ### 실제 서비스 구현
@@ -170,6 +175,75 @@
 
 
 ## 4. 필수 기능
+
+### 관리자 뷰
+
+Django의 기본 admin 기능을 이용하여 구현하며 권리자 권한의 유저만 영화 등록 / 수정 / 삭제의 권한을 가진다.
+
+```python
+from django.contrib import admin
+from .models import Movie, Genre, Certification, Actor, Director, OTT, Keyword, Review
+
+admin.site.register(Movie)
+admin.site.register(Genre)
+admin.site.register(Certification)
+admin.site.register(Actor)
+admin.site.register(Director)
+admin.site.register(OTT)
+admin.site.register(Keyword)
+admin.site.register(Review)
+```
+
+
+
+### 영화 정보
+
+영화 데이터는 Database Seeding을 활용하여 282편의 영화 데이터가 존재하도록 구성했다.
+
+로그인 된 유저는 영화에 대한 평점 등록 / 수정 /삭제 등이 영화 상세 페이지에서 가능하다.
+
+
+
+### 커뮤니티
+
+커뮤니티에는 영화와 관련된 기자의 글이 작성된다.
+
+관리자에 의해 기자는 권한을 부여받아 글을 작성할 수 있다.
+
+이러한 특징을 구현하고자 로그인여부와 관계 없이 게시글을 영화제목과 글제목이 조회되는 게시판을 구현했다.
+
+사용자는 자신이 작성한 게시글과 댓글만을 수정 삭제할 수 있다.
+
+
+
+**community**
+
+- 로그인 시 작성된 게시글 영화 제목/ 글 제목/ 좋아요 수/ 댓글 수 보임
+- 기자 권한을 가진 유저들에게만 글 작성 버튼 보이게 함
+  - 가입 시 이메일에 기자 권한 부여해줌
+
+![img](https://lh4.googleusercontent.com/zFQeCW8_zyJGMn3igCuYfzS0IV_dMSX_k5gdUX1QskFvjjtelXAqVr-EyWfEGyvwGjlZTFE7X33Di6dXqUDyTJkdzeKwvpSyB9b1ajZQn7w35cOLcSCxGr9XZdCB2ybMQ2GTiNT-Aa3EixjHiw)
+
+
+
+**article new**
+
+- 기자 권한을 가진 유저들만 게시글 작성할 수 있게 함
+  - 유저의 이메일을 통해 기자 구분
+- 영화 제목 / 글 제목 / 내용 작성 
+
+![img](https://lh5.googleusercontent.com/YkhcQQvLqm_4PaKPKyvHdn7-zSDnqa-bGO1EQN1U7Fb6zN45cjwcPQwUSKmAkx_9fjh0pIV49U9RefHYa1GOR9HT6AkJgaUngWdI16xxwZHYQVbmqHTPza53fwZojzcTJvG7kUwESSAw5tOm5w)
+
+
+
+**article detail**
+
+- 영화 제목 / 글 제목 / 내용 볼 수 있음
+- 작성자만 글 수정 가능
+- 댓글 및 좋아요 기능
+- 좋아요 한 글 프로필 페이지로 넘겨줌
+
+![img](https://lh5.googleusercontent.com/1Fh6er161ZBOWdvoVVvOmyMaykdh7qBamFBRc5qwwmufRi79MfpMMWYmejdp4E-CxXvscJdeeWw1lNiASX6fhWGyF7MD1EDJcvfcGi7KccgQU5FuaeyLY8XGXhpgCiUD40Pbn9Po0pWwmNAU4w)
 
 ### Accounts
 
@@ -272,46 +346,16 @@
 
 
 
-### Community
-
-**community**
-
-- 로그인 시 작성된 게시글 영화 제목/ 글 제목/ 좋아요 수/ 댓글 수 보임
-- 기자 권한을 가진 유저들에게만 글 작성 버튼 보이게 함
-  - 가입 시 이메일에 기자 권한 부여해줌
-
-![img](https://lh4.googleusercontent.com/zFQeCW8_zyJGMn3igCuYfzS0IV_dMSX_k5gdUX1QskFvjjtelXAqVr-EyWfEGyvwGjlZTFE7X33Di6dXqUDyTJkdzeKwvpSyB9b1ajZQn7w35cOLcSCxGr9XZdCB2ybMQ2GTiNT-Aa3EixjHiw)
-
-
-
-**article new**
-
-- 기자 권한을 가진 유저들만 게시글 작성할 수 있게 함
-  - 유저의 이메일을 통해 기자 구분
-- 영화 제목 / 글 제목 / 내용 작성 
-
-![img](https://lh5.googleusercontent.com/YkhcQQvLqm_4PaKPKyvHdn7-zSDnqa-bGO1EQN1U7Fb6zN45cjwcPQwUSKmAkx_9fjh0pIV49U9RefHYa1GOR9HT6AkJgaUngWdI16xxwZHYQVbmqHTPza53fwZojzcTJvG7kUwESSAw5tOm5w)
-
-
-
-**article detail**
-
-- 영화 제목 / 글 제목 / 내용 볼 수 있음
-- 작성자만 글 수정 가능
-- 댓글 및 좋아요 기능
-- 좋아요 한 글 프로필 페이지로 넘겨줌
-
-![img](https://lh5.googleusercontent.com/1Fh6er161ZBOWdvoVVvOmyMaykdh7qBamFBRc5qwwmufRi79MfpMMWYmejdp4E-CxXvscJdeeWw1lNiASX6fhWGyF7MD1EDJcvfcGi7KccgQU5FuaeyLY8XGXhpgCiUD40Pbn9Po0pWwmNAU4w)
-
-
-
 ### 기타
 
 **Navbar** 
 
 - 로그인 안 되어 있을 시  COMMUNITY / RECOMMEND / HOME / LOGIN / SIGNUP
-
 - 로그인 시 COMMUNITY / RECOMMEND / HOME / LOGOUT / PROFILE
+
+제시된 상황에 맞는 오류 메세지를 확인할 수 있다.
+
+로그인이 필요한 경우 사용자가 로그인 이후 이전 페이지로 돌아갈 수 있도록 코드를 작성했다.
 
 ![텍스트, 클립아트이(가) 표시된 사진  자동 생성된 설명](https://lh3.googleusercontent.com/rzJXgebzm12TornzFRO2r4s4jPRh3C2oaw2xoTgs-riGVDfhhL7DzE9kXa63eUQu6iNMK0vOxkGhvEblWbHA33UUpTwmcZofyAxbOIHNmLTP_yHI1_vUkD6AutS6LBnHIfvomsMmOdkVV6ggHg)
 
@@ -782,6 +826,22 @@ class Keyword(models.Model):
 ## 6. 느낀점
 
 - 수연
+
+느낀점
+기획을 꼼꼼하게 해도 돌아가서 수정해하는 상황들이 생겼다.
+Serializer의 field와 model의 ManyToMany에서 실수들이 많이 나왔다.
+실제 프로젝트에는 큰 영향을 주지 않았지만 돌아갈때마다 제대로 이해하지 못했나? 하는 생각과 함께 다시 공부할 수 있었다.
+물론 기획을 잘 해두어서 코드나 구현의 문제가 생겼을 때 문제를 찾고 해결하는 것이 비교적 수월했다.
+그 때마다 기획에 시간을 투자하길 잘했다는 생각을 했다.
+
+개인적으로는 이번에 대부분의 프론트(CSS)를 담당하면서 CSS, JS를 활용하는 실력이 많이 늘었다고 생각한다.
+구현하고 싶은 페이지의 모습이 있어 찾아보고 구현하는 과정을 계속 시도해서 완성을 하고 나니 Vue.js의 template, style구조에서 비교적 자유롭게 구성을 만들 수 있게 되었다.
+
+페어로 진행을 하면서 두명이서 시간내에 구현이 가능한가 하는 의문과 함께 진행하는 프로젝트의 어려움을 알았던 것 같다.
+이전 프로젝트에서 경험했던 브랜치 오류부터 DB구조가 얽혀있어 데이터를 사용하지 못하는 오류까지 정말 다양한 오류를 경험했다.
+혼자하는 것을 나눠서하는 장점이 있는가 하면 혼자해결했을 때보다 어렵게 진행되는 과정들도 많았다.
+그럼에도 불구하고 이번 프로젝트에서 가장 만족하는 부분은 밤을 세워가며 한 문제를 해결하려고 하는 과정에서 나와 페어가 긍정적이고 지지치 않으려고 노력했던 점이다.
+기획부터 구현까지하는 과정에서 서로 다른 부분이 많았는 데 그 부분을 서로의 시너지로 생각하면서 잘 해결해나갔다고 생각한다.
 
 
 

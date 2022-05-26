@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <form @submit.prevent="onSubmit" class="movie-comment-form">
-      <label for="review">평점과 별점을 남겨주세요 :)</label>
+      <label for="review">감상평과 별점을 남겨주세요 :)</label>
       <div><input type="text" id="review" v-model="content" required></div>
       <div class="rating"> 
         <input type="radio" name="rating" value="10" id="5" v-model="rank">
