@@ -466,6 +466,16 @@ class Movie(models.Model):
 
 ### **0519**
 
+```
+추천 알고리즘 구상
+알고리즘 이후 제시하는 방법
+OTT를 활용하는 방법, Keyword, 감독정보에 따른 영화추천
+
+선별된 영화데이터를 Database Seeding을 통해 받기위한 코드를 구상 및 작성 시작
+(Popular Movie_id 기반, Movie_id 자체 기반)
+영화데이터의 관계 테이블을 확정짓기
+```
+
 
 
 ### 0520
@@ -488,6 +498,15 @@ Comment Model
 ✔확인사항
 
 - python은 .env 파일 생성, API_KEY="key 이름"
+
+```python
+from dotenv import load_dotenv
+import os
+load_dotenv()
+API_KEY = os.environ.get('API_KEY')
+```
+
+
 
 ⛔에러
 
@@ -564,15 +583,33 @@ class User(AbstractUser):
 
 
 
-### 0521
+:stop_button:TMDB 데이터를 선별하여 수집하기 위한 코드 작성 유의사항
+
+```
+1. 데이터의 형태를 확인하고 NOT NULL등의 여부를 결정
+2. 데이터의 NULL값의 처리방법 (for, if, else, return)
+```
+
+
+
+:book: 배우고 넘어간 것들
+
+* ERD의 비종속과 종속
+
+* ManyToMany에서의 related_name
+
+
+
+### 0521  0522
 
 ```txt
 # 진행사항
-# 만나서 한 날
+# 5.21 만나서 한 날
 - dummy data 코드 작성
 - models.py 확정
 - erd 작성
 - 레이아웃(메인페이지, recommend)
+- 각 레이아웃에 필요한 데이터 필드 확정
 - Gitlab에 django 프로젝트 생성
 ```
 
@@ -589,10 +626,13 @@ class User(AbstractUser):
 ```txt
 # 진행사항
 Movie Serializer/Accounts Serializer/Community Serializer
+Data Table의 구성으로 여러차례 serializer를 재구성했다.
+
+Django의 Backend부분의 구성을 마치고 Vue로 넘어갈 준비를 완료했다.
 ```
 
 ```python
-# 추천 알고리즘 로직
+# 추천 알고리즘 로직(메인 페이지, 관리자의 추천 영화)
 
 keyword_list = ['2343', '9840', '180547', '18035']
 # keyword 하나 고르기
@@ -606,7 +646,7 @@ movies = Movie.objects.filter(keywords=keyword).order_by('?')[:10]
 
 - url의 /위치 앞인지 뒤인지 명심할 것!
 - django settings.py 에 Vue localhost 포트 8081 추가
-
+  - 이전 배포를 했을 때 사용했던 Tomcat이 원인으로 생각된다.
 
 
 
@@ -625,6 +665,12 @@ Navigation Guard
 ```
 
 ✔확인사항
+
+조금더 꼼꼼하게 코드를 작성하기 위해 pk, id를 모두 id로 맞춰주었다.
+
+이 부분에 대한 확인도 필요하다.
+
+
 
 ⛔에러
 
@@ -650,10 +696,12 @@ class MovieMainListSerializer(serializers.ModelSerializer):
 
 ### 0525
 
+본격적으로 Vue의 HTML/CSS 작업을 시작했다. 
+
 **vue.js**
 
 ```txt
-RecommendListView/RecommendOttView/RecommendDirectorView/RecommendKeywordView
+Navbar/RecommendListView/RecommendOttView/RecommendDirectorView/RecommendKeywordView
 MovieDetailView
 ```
 
@@ -720,7 +768,7 @@ export default {
 - id
 - 비동기 때문에 생기는 문제. 데이터가 넘어오기 전에 먼저 실행돼서 값이 undefined으로 들어온다 =>  .length로 해결(값이 들어있다면)
 - realted_name을 맞춰주지 않으면 undefined 값으로 들어온다.
-- json 파일 loaddata FK 오류 => movie 데이터 뿐 아니라 account 같은 다른 데이터도 있어서 발생한 문제(?) 
+- json 파일 loaddata FK 오류 => movie 데이터 뿐 아니라 account 테이블 처럼 다른 테이블과의 관계가 파일에 반영되어 있는데 관계 테이블의 정보가 누락되었기 때문에 발생한 오류
 
 
 
@@ -817,9 +865,108 @@ class Keyword(models.Model):
     movies = models.ManyToManyField(Movie, related_name='keywords')
 ```
 
+
+
+**vue.js** 
+
+Profile, Community, MovieDetail, ArticleNewView,MovieCommentForm
+
+![image-20220527075745280](README.assets/image-20220527075745280.png)
+
+**MovieCommentForm**
+
+🔅 평점으로 넣어줄 input값을 별모양에 마우스를 올리는 방법으로 정하는 코드이다.(hover)
+
+```vue
+<template>
+  <div class="container">
+    <form @submit.prevent="onSubmit" class="movie-comment-form">
+      <label for="review">감상평과 별점을 남겨주세요 :)</label>
+      <div><input type="text" id="review" v-model="content" required></div>
+      <div class="rating"> 
+        <input type="radio" name="rating" value="10" id="5" v-model="rank">
+        <label for="5">☆</label> 
+        <input type="radio" name="rating" value="8" id="4" v-model="rank">
+        <label for="4">☆</label> 
+        <input type="radio" name="rating" value="6" id="3" v-model="rank">
+        <label for="3">☆</label> 
+        <input type="radio" name="rating" value="4" id="2" v-model="rank">
+        <label for="2">☆</label> 
+        <input type="radio" name="rating" value="2" id="1" v-model="rank">
+        <label for="1">☆</label> 
+      </div>
+      <button>review</button>
+    </form>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+  name: 'MovieCommentForm',
+  data() {
+    return {
+      content: '',
+      rank: 10,
+    }
+  },
+  computed: {
+    ...mapGetters(['movie']),
+  },
+  methods: {
+    ...mapActions(['createReview']),
+    onSubmit() {
+      this.createReview({ movieId: this.movie.id, content: this.content, rank: this.rank })
+      this.content = ''
+      this.rank = 0
+    }
+  }
+}
+</script>
+
+<style>
+  .rating {
+  display: flex;
+  justify-content: center;
+  flex-direction: row-reverse;
+  }
+  .rating>input {
+  display: none
+  }
+  .rating>label {
+  position: relative;
+  width: 19px;
+  font-size: 25px;
+  color: #ff0000;
+  cursor: pointer
+  }
+  .rating>label::before {
+  content: "\2605";
+  position: absolute;
+  opacity: 0
+  }
+  .rating>label:hover:before,
+  .rating>label:hover~label:before {
+  opacity: 1 !important
+  }
+  .rating>input:checked~label:before {
+  opacity: 1
+  }
+  .rating:hover>input:checked~label:before {
+  opacity: 0.4
+  }
+</style>
+```
+
+
+
 ✔확인사항
 
 - 장고의 isStaff는 보내주는 곳을 알 수 없다.
+  - dj_rest에서 해결해주는 부분이라고 생각된다.
+  - 사용페이지에서 isStaff값 자체를 받을 수 없어 활용할 수 없었다.
+
 
 
 
@@ -830,18 +977,13 @@ class Keyword(models.Model):
 느낀점
 기획을 꼼꼼하게 해도 돌아가서 수정해하는 상황들이 생겼다.
 Serializer의 field와 model의 ManyToMany에서 실수들이 많이 나왔다.
-실제 프로젝트에는 큰 영향을 주지 않았지만 돌아갈때마다 제대로 이해하지 못했나? 하는 생각과 함께 다시 공부할 수 있었다.
-물론 기획을 잘 해두어서 코드나 구현의 문제가 생겼을 때 문제를 찾고 해결하는 것이 비교적 수월했다.
-그 때마다 기획에 시간을 투자하길 잘했다는 생각을 했다.
+실제 프로젝트에는 큰 영향을 주지 않았지만 돌아갈때마다 제대로 이해하지 못했나? 하는 생각과 함께 다시 공부할 수 있었다. 물론 기획을 잘 해두어서 코드나 구현의 문제가 생겼을 때 문제를 찾고 해결하는 것이 비교적 수월했다. 그 때마다 기획에 시간을 투자하길 잘했다는 생각을 했다.
 
 개인적으로는 이번에 대부분의 프론트(CSS)를 담당하면서 CSS, JS를 활용하는 실력이 많이 늘었다고 생각한다.
 구현하고 싶은 페이지의 모습이 있어 찾아보고 구현하는 과정을 계속 시도해서 완성을 하고 나니 Vue.js의 template, style구조에서 비교적 자유롭게 구성을 만들 수 있게 되었다.
 
-페어로 진행을 하면서 두명이서 시간내에 구현이 가능한가 하는 의문과 함께 진행하는 프로젝트의 어려움을 알았던 것 같다.
-이전 프로젝트에서 경험했던 브랜치 오류부터 DB구조가 얽혀있어 데이터를 사용하지 못하는 오류까지 정말 다양한 오류를 경험했다.
-혼자하는 것을 나눠서하는 장점이 있는가 하면 혼자해결했을 때보다 어렵게 진행되는 과정들도 많았다.
-그럼에도 불구하고 이번 프로젝트에서 가장 만족하는 부분은 밤을 세워가며 한 문제를 해결하려고 하는 과정에서 나와 페어가 긍정적이고 지지치 않으려고 노력했던 점이다.
-기획부터 구현까지하는 과정에서 서로 다른 부분이 많았는 데 그 부분을 서로의 시너지로 생각하면서 잘 해결해나갔다고 생각한다.
+페어로 진행을 하면서 두명이서 시간내에 구현이 가능한가 하는 의문과 함께 진행하는 프로젝트의 어려움을 알았던 것 같다. 이전 프로젝트에서 경험했던 브랜치 오류부터 DB구조가 얽혀있어 데이터를 사용하지 못하는 오류까지 정말 다양한 오류를 경험했다. 혼자하는 것을 나눠서하는 장점이 있는가 하면 혼자 해결했을 때보다 어렵게 진행되는 과정들도 많았다.
+그럼에도 불구하고 이번 프로젝트에서 가장 만족하는 부분은 밤을 세워가며 한 문제를 해결하려고 하는 과정에서 나와 페어가 긍정적이고 지지치 않으려고 노력했던 점이다. 기획부터 구현까지하는 과정에서 서로 다른 부분이 많았는 데 그 부분을 서로의 시너지로 생각하면서 잘 해결해나갔다고 생각한다.
 
 
 
