@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import Movie, Actor, Director, Genre, Certification, OTT, Keyword
+from .models import Movie, Actor, Director, Genre, Certification, OTT, Keyword, Review
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class MovieSerializer(serializers.ModelSerializer):
 
@@ -26,7 +29,7 @@ class MovieSerializer(serializers.ModelSerializer):
             fields = ('id', 'name',)
         
     genres = GenreSerializer(many=True, read_only=True)
-  
+
     class CertificationSerializer(serializers.ModelSerializer):
 
         class Meta:
@@ -46,13 +49,20 @@ class MovieSerializer(serializers.ModelSerializer):
 
     users_mymovie = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     users_wish = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    
+       
+    class ReviewSerializer(serializers.ModelSerializer):
+
+        class Meta:
+            model = Review
+            fields = '__all__'
+
+    reviews = ReviewSerializer(many=True, read_only=True)
+
     class Meta:
         model = Movie
         exclude = ('original_title',)
 
 class MovieMainListSerializer(serializers.ModelSerializer):
-
 
     class KeywordSerializer(serializers.ModelSerializer):
 
@@ -62,7 +72,21 @@ class MovieMainListSerializer(serializers.ModelSerializer):
         
     keywords = KeywordSerializer(many=True, read_only=True)
     
-
     class Meta:
         model = Movie
         fields = ('id', 'poster_path', 'title', 'video', 'keywords',)
+
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class UserSerializer(serializers.ModelSerializer):
+        
+        class Meta:
+            model = User
+            fields = ('id', 'username')
+
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Review
+        fields = ('id', 'content', 'movie', 'created_at', 'updated_at', 'rank', 'user',)
+        read_only_fields = ('movie',)

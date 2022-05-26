@@ -11,7 +11,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = Movie
-            fields = ('id','title',)
+            fields = ('id','title','poster_path')
 
     movies_mymovie = MovieSerializer(many=True, read_only=True)
     movies_wish = MovieSerializer(many=True, read_only=True)
@@ -22,8 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             model = Article
             fields = ('id','title',)
 
-    like_articles = ArticleSerializer(many=True, read_only=True)
- 
+    like_articles = ArticleSerializer(many=True, read_only=True)  
     class Meta:
         model = User
         fields = ('id', 'username', 'movies_mymovie', 'movies_wish', 'like_articles',)
